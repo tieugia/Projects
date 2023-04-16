@@ -60,10 +60,10 @@ namespace MiddleAPI.Functions
             var url = AppSettingUtil.IdentityServerEndpoint;
 
             var dict = new Dictionary<string, string>();
-            dict.Add("client_id", "JLMobile.App");
-            dict.Add("client_secret", "j0bl0g1c!!!d3v");
-            dict.Add("grant_type", "client_credentials");
-            dict.Add("scope", "JLMobile.WebApi JLMobile.Service JLMobile.WorkflowService");
+            dict.Add("client_id", AppSettingUtil.ClientId);
+            dict.Add("client_secret", AppSettingUtil.ClientSecret);
+            dict.Add("grant_type", AppSettingUtil.GrantType);
+            dict.Add("scope", AppSettingUtil.Scope);
 
             var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = new FormUrlEncodedContent(dict) };
 
