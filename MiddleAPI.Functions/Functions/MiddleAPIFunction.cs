@@ -1,6 +1,5 @@
 using AzureFunctions.Extensions.Middleware;
 using AzureFunctions.Extensions.Middleware.Abstractions;
-using JoblogicMobile.MiddleAPI.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using MiddleAPI.Helpers;

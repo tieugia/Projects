@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JoblogicMobile.MiddleAPI.Services
+namespace MiddleAPI.Services
 {
     public interface IVisitService
     {
