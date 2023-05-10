@@ -1,4 +1,6 @@
-﻿namespace ModernisationChallenge.Services
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace ModernisationChallenge.DAL.Services
 {
     public static class BaseServices
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ModernisationChallenge.Repository
+namespace ModernisationChallenge.DAL.Repository
 {
     public interface ITaskRepository
     {

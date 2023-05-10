@@ -1,6 +1,6 @@
-﻿using ModernisationChallenge.Repository;
+﻿using ModernisationChallenge.DAL.Repository;
 
-namespace ModernisationChallenge.Services
+namespace ModernisationChallenge.DAL.Services
 {
     public interface ITaskService
     {

@@ -1,4 +1,4 @@
-﻿namespace ModernisationChallenge.Repository
+﻿namespace ModernisationChallenge.DAL.Repository
 {
     public interface IModerniseUnitOfWork : IDisposable
     {

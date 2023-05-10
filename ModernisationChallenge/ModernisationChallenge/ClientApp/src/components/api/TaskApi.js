@@ -22,10 +22,7 @@
     }
 
     static async deleteTask(id) {
-        await fetch(`/api/Task/${id}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" }
-        });
+        await fetch(`/api/Task/Delete/${id}`);
     }
 
     static async completeTask(id) {

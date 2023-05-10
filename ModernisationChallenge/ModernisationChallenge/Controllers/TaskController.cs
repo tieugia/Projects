@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ModernisationChallenge.Services;
+using ModernisationChallenge.DAL.Services;
 
 namespace ModernisationChallenge.Controllers
 {
@@ -16,14 +16,14 @@ namespace ModernisationChallenge.Controllers
 
         // GET: api/Task
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Entity.Task>>> Get()
+        public async Task<ActionResult<IEnumerable<DAL.Entity.Task>>> Get()
         {
             var tasks = await _taskService.GetAllTasksAsync();
             return Ok(tasks);
         }
         // GET: api/Task/Complete/5
         [HttpGet("Complete/{id}")]
-        public async Task<ActionResult<IEnumerable<Entity.Task>>> CompleteAsync(int id)
+        public async Task<ActionResult<IEnumerable<DAL.Entity.Task>>> CompleteAsync(int id)
         {
             var tasks = await _taskService.CompleteTaskAsync(id);
             return Ok(tasks);
@@ -45,7 +45,7 @@ namespace ModernisationChallenge.Controllers
 
         // PUT: api/Task/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTaskAsync(int id, Entity.Task task)
+        public async Task<IActionResult> UpdateTaskAsync(int id, DAL.Entity.Task task)
         {
             if (id != task.Id)
             {
@@ -59,7 +59,7 @@ namespace ModernisationChallenge.Controllers
 
         // POST: api/Task
         [HttpPost]
-        public async Task<ActionResult<Task>> AddTaskAsync(Entity.Task task)
+        public async Task<ActionResult<Task>> AddTaskAsync(DAL.Entity.Task task)
         {
             await _taskService.AddTaskAsync(task);
 
@@ -67,7 +67,7 @@ namespace ModernisationChallenge.Controllers
         }
 
         // DELETE: api/Task/5
-        [HttpDelete("{id}")]
+        [HttpGet("Delete/{id}")]
         public async Task<IActionResult> DeleteTaskAsync(int id)
         {
             var task = await _taskService.GetTaskByIdAsync(id);

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ModernisationChallenge.Entity
+namespace ModernisationChallenge.DAL.Entity
 {
     [Table("Tasks")]
     public class Task

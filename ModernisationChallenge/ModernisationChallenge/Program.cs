@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ModernisationChallenge;
+using ModernisationChallenge.DAL;
+using ModernisationChallenge.DAL.Services;
 using ModernisationChallenge.Middlewares;
-using ModernisationChallenge.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

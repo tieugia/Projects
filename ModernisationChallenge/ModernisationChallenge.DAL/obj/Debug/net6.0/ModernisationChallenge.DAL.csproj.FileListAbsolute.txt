@@ -1,0 +1,12 @@
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\bin\Debug\net6.0\ModernisationChallenge.DAL.deps.json
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\bin\Debug\net6.0\ModernisationChallenge.DAL.dll
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\bin\Debug\net6.0\ModernisationChallenge.DAL.pdb
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ModernisationChallenge.DAL.csproj.AssemblyReference.cache
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ModernisationChallenge.DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ModernisationChallenge.DAL.AssemblyInfoInputs.cache
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ModernisationChallenge.DAL.AssemblyInfo.cs
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ModernisationChallenge.DAL.csproj.CoreCompileInputs.cache
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ModernisationChallenge.DAL.dll
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\refint\ModernisationChallenge.DAL.dll
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ModernisationChallenge.DAL.pdb
+C:\Projects\ModernisationChallenge\ModernisationChallenge.DAL\obj\Debug\net6.0\ref\ModernisationChallenge.DAL.dll
