@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import TaskApi from './api/TaskApi';
 import TaskTable from './TaskTable';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Fab, TextField } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Fab, TextField, Menu, MenuItem, } from '@mui/material';
 
 export class TaskList extends React.Component {
     constructor(props) {
@@ -157,6 +157,21 @@ export class TaskList extends React.Component {
                     selectedTaskId={selectedTaskId}
                     anchorEl={anchorEl}
                 />
+                {tasks.map((task) => (
+                    <MenuItem key={task.id}>
+                        <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, task)}>
+                            <AddIcon />
+                        </Fab>
+                        <MenuItem onClick={() => handleEditModalOpen(task.id)}>
+                            <EditIcon />
+                            Edit
+                        </MenuItem>
+                        <MenuItem onClick={() => handleDeleteModalOpen(task.id)}>
+                            <DeleteIcon />
+                            Delete
+                        </MenuItem>
+                    </MenuItem>
+                ))}
 
                 <Dialog fullWidth={true} className="paper" open={openAddModal} onClose={this.handleAddModalClose}>
                     <DialogTitle>Add Task</DialogTitle>
