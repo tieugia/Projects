@@ -147,6 +147,7 @@ export class TaskList extends React.Component {
                     </AddIcon>
                     Add Task
                 </Fab>
+
                 <TaskTable
                     tasks={tasks}
                     handleEditModalOpen={this.handleEditModalOpen}
@@ -157,22 +158,7 @@ export class TaskList extends React.Component {
                     selectedTaskId={selectedTaskId}
                     anchorEl={anchorEl}
                 />
-                {tasks.map((task) => (
-                    <MenuItem key={task.id}>
-                        <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, task)}>
-                            <AddIcon />
-                        </Fab>
-                        <MenuItem onClick={() => handleEditModalOpen(task.id)}>
-                            <EditIcon />
-                            Edit
-                        </MenuItem>
-                        <MenuItem onClick={() => handleDeleteModalOpen(task.id)}>
-                            <DeleteIcon />
-                            Delete
-                        </MenuItem>
-                    </MenuItem>
-                ))}
-
+                   
                 <Dialog fullWidth={true} className="paper" open={openAddModal} onClose={this.handleAddModalClose}>
                     <DialogTitle>Add Task</DialogTitle>
                     <DialogContent>

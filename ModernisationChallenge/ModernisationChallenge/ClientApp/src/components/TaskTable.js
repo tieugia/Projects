@@ -1,7 +1,7 @@
 import React from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { DataGrid } from '@mui/x-data-grid';
-import { Fab } from '@mui/material';
+import { Menu, MenuItem, Fab } from '@mui/material';
 
 import Checkbox from '@mui/material/Checkbox';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
@@ -36,7 +36,20 @@ const TaskTable = ({ tasks, handleEditModalOpen, handleDeleteModalOpen,
                         <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, id)}>
                             <AddIcon></AddIcon>
                         </Fab>
-                        
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={(e) => handleEditModalOpen(id)}>
+                                <EditIcon />
+                                Edit
+                            </MenuItem>
+                            <MenuItem onClick={(e) => handleDeleteModalOpen(id)}>
+                                <DeleteIcon />
+                                Delete
+                            </MenuItem>
+                        </Menu>
                     </>
                 );
             },
