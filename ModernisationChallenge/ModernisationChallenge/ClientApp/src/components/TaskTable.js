@@ -30,9 +30,10 @@ const TaskTable = ({ tasks, handleEditModalOpen, handleDeleteModalOpen,
             filterable: true,
             disableColumnMenu: false,
             renderCell: (params) => {
+                var id = params.row.id;
                 return (
                     <>
-                        <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, params.row.id)}>
+                        <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, id)}>
                             <AddIcon></AddIcon>
                         </Fab>
                         <Menu
@@ -40,11 +41,11 @@ const TaskTable = ({ tasks, handleEditModalOpen, handleDeleteModalOpen,
                             open={Boolean(anchorEl)}
                             onClose={handleMenuClose}
                         >
-                            <MenuItem onClick={(e) => handleEditModalOpen(e, params.row.id)}>
+                            <MenuItem onClick={(e) => handleEditModalOpen(id)}>
                                 <EditIcon />
                                 Edit
                             </MenuItem>
-                            <MenuItem onClick={(e) => handleDeleteModalOpen(e, params.row.id)}>
+                            <MenuItem onClick={(e) => handleDeleteModalOpen(id)}>
                                 <DeleteIcon />
                                 Delete
                             </MenuItem>
