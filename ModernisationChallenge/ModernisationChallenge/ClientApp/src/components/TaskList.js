@@ -1,41 +1,131 @@
 import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DataGrid } from '@mui/x-data-grid';
 import {
     Button,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
     Dialog,
     DialogTitle,
     DialogContent,
     DialogActions,
-    DialogContentText
+    DialogContentText,
+    Menu,
+    MenuItem,
+    Fab,
+    IconButton,
 } from '@mui/material';
-
 import Checkbox from '@mui/material/Checkbox';
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
-import {
-    Add as AddIcon,
-    Edit as EditIcon,
-    Delete as DeleteIcon
-} from '@material-ui/icons';
 import TaskApi from './api/TaskApi';
+
+const TaskTable = ({ tasks, handleEditModalOpen, handleDeleteModalOpen,
+    handleMenuClick, handleMenuClose, handleCompleteTask, anchorEl,
+    openAddModal, handleAddModalClose, selectedTaskDetails, handleAddModalSave,
+    handleTaskDetailsChange, openEditModal, handleEditModalClose,
+    handleEditModalSave, openDeleteModal, handleDeleteModalClose, handleDeleteModalConfirm }) => {
+    const columns = [
+        {
+            field: 'completed',
+            headerName: 'Completed',
+            width: 200,
+            align: 'center',
+            renderCell: (params) => {
+                return (
+                    <Checkbox checked={params.row.completed} onClick={() => handleCompleteTask(params.row.id)}></Checkbox>
+                )
+            }
+        },
+        { field: 'details', headerName: 'Details', width: 700, align: 'center' },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 200,
+            align: 'center',
+            sortable: true,
+            filterable: true,
+            disableColumnMenu: false,
+            renderCell: (params) => {
+                return (
+                    <>
+                        <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, params.row)}>
+                            <AddIcon></AddIcon>
+                        </Fab>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={() => handleEditModalOpen(params.row.id)}>
+                                <EditIcon />
+                                Edit
+                            </MenuItem>
+                            <MenuItem onClick={() => handleDeleteModalOpen(params.row.id)}>
+                                <DeleteIcon />
+                                Delete
+                            </MenuItem>
+                        </Menu>
+
+                        <Dialog className="paper" open={openAddModal} onClose={handleAddModalClose}>
+                            <DialogTitle>Add Task</DialogTitle>
+                            <DialogContent>
+                                <textarea required label="Details" value={selectedTaskDetails} onChange={handleTaskDetailsChange} />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleAddModalClose}>Cancel</Button>
+                                <Button variant="contained" color="primary" onClick={handleAddModalSave}>Save</Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Dialog className="paper" open={openEditModal} onClose={handleEditModalClose}>
+                            <DialogTitle>Edit Task</DialogTitle>
+                            <DialogContent>
+                                <textarea required label="Details" value={selectedTaskDetails} onChange={handleTaskDetailsChange} />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleEditModalClose}>Cancel</Button>
+                                <Button variant="contained" color="primary" onClick={handleEditModalSave}>Save</Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Dialog className="paper" open={openDeleteModal} onClose={handleDeleteModalClose}>
+                            <DialogTitle>Delete Task</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>Are you sure you want to delete this task?</DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleDeleteModalClose}>Cancel</Button>
+                                <Button variant="contained" color="primary" onClick={handleDeleteModalConfirm}>OK</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </>
+                );
+            },
+        },
+    ];
+
+    return (
+        <div style={{ height: 370, width: '100%' }}>
+            <DataGrid rows={tasks} columns={columns} pageSize={5} />
+        </div>
+    );
+};
+
+export default TaskTable;
+
 
 export class TaskList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             tasks: [],
+            anchorEl: null,
+            selectedItem: null,
             openAddModal: false,
             openEditModal: false,
             openDeleteModal: false,
             selectedTaskId: null,
-            selectedTaskDetails: ''
+            selectedTaskDetails: '',
         };
     }
 
@@ -44,8 +134,29 @@ export class TaskList extends React.Component {
     }
 
     loadTasks = () => {
-        TaskApi.getAllTasks()
-            .then((data) => this.setState({ tasks: data }));
+        TaskApi.getAllTasks().then((data) => this.setState({ tasks: data }));
+    };
+
+    handleMenuClick = (event, task) => {
+        this.setState({
+            anchorEl: event.currentTarget,
+            selectedItem: task,
+        });
+    };
+
+    handleCompleteTask = (id) => {
+        TaskApi.completeTask(id)
+            .then(() => {
+                this.loadTasks();
+            })
+            .catch((error) => this.notify('Failed to complete task', 'error'))
+    }
+
+    handleMenuClose = () => {
+        this.setState({
+            anchorEl: null,
+            selectedItem: null,
+        });
     };
 
     handleAddModalOpen = () => {
@@ -57,7 +168,6 @@ export class TaskList extends React.Component {
     };
 
     handleAddModalSave = () => {
-        debugger;
         const { selectedTaskDetails } = this.state;
         const newTask = { details: selectedTaskDetails };
         TaskApi.addTask(newTask)
@@ -69,8 +179,11 @@ export class TaskList extends React.Component {
             .catch((error) => this.notify('Failed to add task', 'error'));
     };
 
-    handleEditModalOpen = (taskId, taskDetails) => {
-        this.setState({ selectedTaskId: taskId, selectedTaskDetails: taskDetails, openEditModal: true });
+    handleEditModalOpen = (taskId) => {
+        const task = this.state.tasks.find((task) => task.id === taskId);
+        if (task) {
+            this.setState({ selectedTaskId: task.id, selectedTaskDetails: task.details, openEditModal: true });
+        }
     };
 
     handleEditModalClose = () => {
@@ -90,11 +203,11 @@ export class TaskList extends React.Component {
     };
 
     handleDeleteModalOpen = (taskId) => {
-        this.setState({ selectedTaskId: taskId, openDeleteModal: true });
+        this.setState({ selectedTaskId: taskId, isDeleteModalOpen: true });
     };
 
     handleDeleteModalClose = () => {
-        this.setState({ selectedTaskId: null, openDeleteModal: false });
+        this.setState({ isDeleteModalOpen: false });
     };
 
     handleDeleteModalConfirm = () => {
@@ -103,122 +216,50 @@ export class TaskList extends React.Component {
             .then(() => {
                 this.loadTasks();
                 this.handleDeleteModalClose();
-                this.notify('Delete successfully');
+                this.notify('Delete task successfully');
             })
-            .catch((error) => this.notify('Failed to delete', 'error'))
+            .catch((error) => this.notify('Failed to delete task', 'error'));
     };
-
-    handleTaskDetailsChange = (event) => {
-        this.setState({ selectedTaskDetails: event.target.value });
-    };
-
-    handleCompleteTask = (id) => {
-        TaskApi.completeTask(id)
-            .then(() => {
-                this.loadTasks();
-            })
-            .catch((error) => this.notify('Failed to complete task', 'error'))
-    }
-
-    notify = (message, type = 'success') => {
-        const toastConfig = {
-            position: 'bottom-right',
-            autoClose: 5000,
-            closeOnClick: true,
-            pauseOnHover: true
-        };
-        switch (type) {
-            case 'success':
-                toast.success(message, toastConfig);
-                break;
-            case 'error':
-                toast.error(message, toastConfig);
-                break;
-            default:
-                toast(message, toastConfig);
-        }
-    }
 
     render() {
-        const { tasks, openAddModal, openEditModal, openDeleteModal, selectedTaskId, selectedTaskDetails } = this.state;
+        //const { tasks, handleEditModalOpen, handleDeleteModalOpen,
+        //    handleMenuClick, handleMenuClose, handleCompleteTask, anchorEl,
+        //    openAddModal,  openEditModal, openDeleteModal} = this.state;
+        const { tasks } = this.state;
+
         return (
             <div>
                 <h1>Tasks</h1>
-
-                <Button>
-                    <AddIcon variant="contained" color="primary" onClick={this.handleAddModalOpen}>
-                        Add Task
+                <Fab variant="extended" onClick={this.handleAddModalOpen}>
+                    <AddIcon>
                     </AddIcon>
-                </Button>
+                    Add Task
+                </Fab>
+                <TaskTable
+                    tasks={tasks}
+                    handleEditModalOpen={this.handleEditModalOpen}
+                    handleDeleteModalOpen={this.handleDeleteModalOpen}
+                    handleMenuClick={this.handleMenuClick}
+                    handleMenuClose={this.handleMenuClose}
+                    handleCompleteTask={this.handleCompleteTask}
+                    anchorEl={this.state.anchorEl}
+                    openAddModal={this.state.openAddModal}
+                    handleAddModalClose={this.handleAddModalClose}
+                    selectedTaskDetails={this.selectedTaskDetails}
+                    handleAddModalSave={this.handleAddModalSave}
+                    handleTaskDetailsChange={this.handleTaskDetailsChange}
+                    openEditModal={this.state.openEditModal}
+                    handleEditModalClose={this.handleEditModalClose}
+                    handleTaskDetailsChange={this.handleTaskDetailsChange}
+                    handleEditModalSave={this.handleEditModalSave}
+                    openDeleteModal={this.state.openDeleteModal}
+                    handleDeleteModalClose={this.handleDeleteModalClose}
+                    handleDeleteModalConfirm={this.handleDeleteModalConfirm}
+                />
 
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Completed</TableCell>
-                                <TableCell>Details</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {tasks.map((task) => (
-                                <TableRow key={task.id}>
-                                    <Checkbox checked={task.completed} onClick={() => this.handleCompleteTask(task.id)}></Checkbox>
-                                    <TableCell>{task.details}</TableCell>
-                                    <TableCell>
-                                        <Button>
-                                            <EditIcon variant="contained" color="primary" onClick={() => this.handleEditModalOpen(task.id, task.details)}>
-                                                Edit
-                                            </EditIcon>
-                                        </Button>
-                                        <Button>
-                                            <DeleteIcon variant="contained" color="secondary" onClick={() => this.handleDeleteModalOpen(task.id)}>
-                                                Delete
-                                            </DeleteIcon>
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-
-                <Dialog className="paper" open={openAddModal} onClose={this.handleAddModalClose}>
-                    <DialogTitle>Add Task</DialogTitle>
-                    <DialogContent>
-                        <textarea required label="Details" fullWidth value={selectedTaskDetails} onChange={this.handleTaskDetailsChange} />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleAddModalClose}>Cancel</Button>
-                        <Button variant="contained" color="primary" onClick={this.handleAddModalSave}>Save</Button>
-                    </DialogActions>
-                </Dialog>
-
-                <Dialog className="paper" open={openEditModal} onClose={this.handleEditModalClose}>
-                    <DialogTitle>Edit Task</DialogTitle>
-                    <DialogContent>
-                        <textarea required label="Details" fullWidth value={selectedTaskDetails} onChange={this.handleTaskDetailsChange} />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleEditModalClose}>Cancel</Button>
-                        <Button variant="contained" color="primary" onClick={this.handleEditModalSave}>Save</Button>
-                    </DialogActions>
-                </Dialog>
-
-                <Dialog className="paper" open={openDeleteModal} onClose={this.handleDeleteModalClose}>
-                    <DialogTitle>Delete Task</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>Are you sure you want to delete this task?</DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.handleDeleteModalClose}>Cancel</Button>
-                        <Button variant="contained" color="primary" onClick={this.handleDeleteModalConfirm}>OK</Button>
-                    </DialogActions>
-                </Dialog>  
                 <ToastContainer />
             </div>
-
         );
     }
 }
-export default TaskList;
+
