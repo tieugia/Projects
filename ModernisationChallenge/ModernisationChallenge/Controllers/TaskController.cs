@@ -16,15 +16,22 @@ namespace ModernisationChallenge.Controllers
 
         // GET: api/Task
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Entity.Task>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<Entity.Task>>> Get()
         {
             var tasks = await _taskService.GetAllTasksAsync();
+            return Ok(tasks);
+        }
+        // GET: api/Task/Complete/5
+        [HttpGet("Complete/{id}")]
+        public async Task<ActionResult<IEnumerable<Entity.Task>>> CompleteAsync(int id)
+        {
+            var tasks = await _taskService.CompleteTaskAsync(id);
             return Ok(tasks);
         }
 
         // GET: api/Task/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Task>> GetTask(int id)
+        public async Task<ActionResult<Task>> GetTaskByIdAsync(int id)
         {
             var task = await _taskService.GetTaskByIdAsync(id);
 
@@ -38,21 +45,21 @@ namespace ModernisationChallenge.Controllers
 
         // PUT: api/Task/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, Entity.Task task)
+        public async Task<IActionResult> UpdateTaskAsync(int id, Entity.Task task)
         {
             if (id != task.Id)
             {
                 return BadRequest();
             }
 
-            await _taskService.UpdateTaskAsync(task);
+            await _taskService.UpdateTaskAsync(id, task);
 
             return NoContent();
         }
 
         // POST: api/Task
         [HttpPost]
-        public async Task<ActionResult<Task>> AddTask(Entity.Task task)
+        public async Task<ActionResult<Task>> AddTaskAsync(Entity.Task task)
         {
             await _taskService.AddTaskAsync(task);
 
@@ -61,7 +68,7 @@ namespace ModernisationChallenge.Controllers
 
         // DELETE: api/Task/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTask(int id)
+        public async Task<IActionResult> DeleteTaskAsync(int id)
         {
             var task = await _taskService.GetTaskByIdAsync(id);
 

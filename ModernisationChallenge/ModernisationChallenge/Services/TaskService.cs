@@ -10,7 +10,9 @@ namespace ModernisationChallenge.Services
 
         Task<bool> AddTaskAsync(Entity.Task task);
 
-        Task<bool> UpdateTaskAsync(Entity.Task task);
+        Task<bool> UpdateTaskAsync(int id, Entity.Task task);
+
+        Task<bool> CompleteTaskAsync(int id);
 
         Task DeleteTaskAsync(int id);
 
@@ -37,12 +39,24 @@ namespace ModernisationChallenge.Services
 
         public async Task<bool> AddTaskAsync(Entity.Task task)
         {
+            task.DateCreated = DateTime.Now;
+            task.DateModified = DateTime.Now;
             await _unitOfWork.TaskRepository.AddAsync(task);
             return await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateTaskAsync(Entity.Task task)
+        public async Task<bool> UpdateTaskAsync(int id, Entity.Task task)
         {
+            var existingTask = await _unitOfWork.TaskRepository.GetByIdAsync(id);
+            existingTask.Details = task.Details;
+            await _unitOfWork.TaskRepository.UpdateAsync(existingTask);
+            return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<bool> CompleteTaskAsync(int id)
+        {
+            var task = await _unitOfWork.TaskRepository.GetByIdAsync(id);
+            task.Completed = !task.Completed;
             await _unitOfWork.TaskRepository.UpdateAsync(task);
             return await _unitOfWork.SaveChangesAsync();
         }

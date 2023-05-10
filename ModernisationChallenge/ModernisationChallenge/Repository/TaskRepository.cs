@@ -47,11 +47,14 @@ namespace ModernisationChallenge.Repository
 
         public async Task AddAsync(Entity.Task task)
         {
+            task.DateCreated = DateTime.Now;
+            task.Completed = false;
             await _context.Tasks.AddAsync(task);
         }
 
         public async Task UpdateAsync(Entity.Task task)
         {
+            task.DateModified = DateTime.Now;
             _context.Entry(task).State = EntityState.Modified;
         }
 
@@ -60,7 +63,8 @@ namespace ModernisationChallenge.Repository
             var task = await GetByIdAsync(id);
             if (task != null)
             {
-                _context.Tasks.Remove(task);
+                task.DateDeleted = DateTime.Now;
+                UpdateAsync(task);
             }
         }
     }

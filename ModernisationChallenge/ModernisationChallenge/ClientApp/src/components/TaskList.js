@@ -1,177 +1,8 @@
-//import React, { Component } from "react";
-//import TaskApi from './api/TaskApi';
-
-//export class TaskList extends Component {
-//    state = {
-//        tasks: [], // array of tasks
-//        isCreatingTask: false, // whether the "create task" dialogue is open
-//        taskToEdit: null, // the task being edited
-//    };
-
-//    componentDidMount() {
-//        // fetch tasks from API and update state
-//        TaskApi.getAllTasks()
-//            .then((data) => {
-//                this.setState({ tasks: data });
-//            })
-//            .catch((error) => {
-//                console.error('Error fetching tasks: ', error);
-//            });
-//    }
-
-//    // handle click on "create task" button
-//    handleCreateTaskClick = () => {
-//        this.setState({
-//            isCreatingTask: true,
-//            taskToEdit: null,
-//        });
-//    };
-
-//    // handle click on "edit" button
-//    handleTaskDetailsChange = (task) => {
-//        this.setState({
-//            isCreatingTask: true,
-//            taskToEdit: task,
-//        });
-//    };
-
-//    // handle click on "cancel" button
-//    handleCancelClick = () => {
-//        this.setState({
-//            isCreatingTask: false,
-//            taskToEdit: null,
-//        });
-//    };
-
-//    // handle click on "save" button
-//    handleSaveClick = () => {
-//        // update tasks state with new/updated task
-//        // and close "create/edit task" dialogue
-//        this.setState({
-//            isCreatingTask: false,
-//            taskToEdit: null,
-//        });
-//    };
-
-//    // handle click on "delete" button
-//    handleDeleteTaskClick = (taskId) => {
-//        // delete task from API and update state
-//    };
-
-//    render() {
-//        const { tasks, isCreatingTask, editingTask } = this.state;
-
-//        return (
-//            <div>
-//                <h1>Tasks</h1>
-
-//                <div className="table">
-//                    <table>
-//                        <thead>
-//                            <tr>
-//                                <th style={{ width: "1px" }}>Completed</th>
-//                                <th>Details</th>
-//                                <th style={{ width: "1px" }}></th>
-//                            </tr>
-//                        </thead>
-//                        <tbody>
-//                            {tasks.map((task) => (
-//                                <tr key={task.id}>
-//                                    <td style={{ textAlign: "center", width: "1px" }}>
-//                                        <input
-//                                            type="checkbox"
-//                                            checked={task.completed}
-//                                            onChange={(event) =>
-//                                                this.handleTaskCompletionChange(task, event.target.checked)
-//                                            }
-//                                        />
-//                                    </td>
-//                                    <td>{task.details}</td>
-//                                    <td style={{ width: "1px" }}>
-//                                        <div className="popup_menu">
-//                                            <span
-//                                                className="popup_menu_button"
-//                                                onClick={() => this.handleTaskEdit(task)}
-//                                            >
-//                                                Edit
-//                                            </span>
-//                                            <span
-//                                                className="popup_menu_button"
-//                                                onClick={() => this.handleTaskDeletion(task)}
-//                                            >
-//                                                Delete
-//                                            </span>
-//                                        </div>
-//                                    </td>
-//                                </tr>
-//                            ))}
-//                            {isCreatingTask && (
-//                                <div className="dialogue">
-//                                    <div style={{ width: "750px" }}>
-//                                        <div className="header">
-//                                            <button
-//                                                className="close"
-//                                                onClick={this.handleCancelTaskCreation}
-//                                            >
-//                                                Close
-//                                            </button>
-//                                            <h2>Create a new task</h2>
-//                                        </div>
-
-//                                        <div className="body">
-//                                            <fieldset className="required">
-//                                                <label>Details</label>
-//                                                <textarea
-//                                                    className="text"
-//                                                    value={editingTask ? editingTask.details : ""}
-//                                                    onChange={(event) =>
-//                                                        this.handleTaskDetailsChange(event.target.value)
-//                                                    }
-//                                                />
-//                                            </fieldset>
-//                                        </div>
-
-//                                        <div className="footer">
-//                                            <p className="commands">
-//                                                <span className="grow"></span>
-//                                                <button
-//                                                    className="button hollow"
-//                                                    onClick={this.handleCancelTaskCreation}
-//                                                >
-//                                                    Cancel
-//                                                </button>
-//                                                <button
-//                                                    className="button"
-//                                                    onClick={this.handleSaveTask}
-//                                                >
-//                                                    Save
-//                                                </button>
-//                                            </p>
-//                                        </div>
-//                                    </div>
-//                                </div>
-//                            )}
-//                        </tbody>
-//                    </table>
-//                </div>
-
-//                {!isCreatingTask && (
-//                    <div className="info">
-//                        <button onClick={this.handleCreateTask}>
-//                            + Create a new task
-//                        </button>
-//                    </div>
-//                )}
-//            </div>
-//        );
-//    }
-//}
-
-//export default TaskList;
-
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
+    Button,
     Table,
     TableBody,
     TableCell,
@@ -179,42 +10,21 @@ import {
     TableHead,
     TableRow,
     Paper,
-    Button,
-    Modal,
-    TextField,
-    FormControlLabel,
-    Checkbox
-} from '@material-ui/core';
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    DialogContentText
+} from '@mui/material';
+
+import Checkbox from '@mui/material/Checkbox';
+
 import {
     Add as AddIcon,
     Edit as EditIcon,
     Delete as DeleteIcon
 } from '@material-ui/icons';
 import TaskApi from './api/TaskApi';
-
-const modalStyle = makeStyles(() => ({
-    paper: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: '#fff',
-        border: '2px solid #000',
-        boxShadow: '10px 10px 5px -5px rgba(0,0,0,0.75)',
-        padding: '16px',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-    },
-}));
-
-const styles = {
-    root: {
-        marginTop: '20px',
-        overflowX: 'auto'
-    },
-    addButton: {
-        marginBottom: '10px'
-    }
-};
 
 export class TaskList extends React.Component {
     constructor(props) {
@@ -247,14 +57,16 @@ export class TaskList extends React.Component {
     };
 
     handleAddModalSave = () => {
+        debugger;
         const { selectedTaskDetails } = this.state;
         const newTask = { details: selectedTaskDetails };
         TaskApi.addTask(newTask)
             .then(() => {
                 this.loadTasks();
                 this.handleAddModalClose();
+                this.notify('Create task successfully');
             })
-            .catch((error) => console.error(error));
+            .catch((error) => this.notify('Failed to add task', 'error'));
     };
 
     handleEditModalOpen = (taskId, taskDetails) => {
@@ -272,8 +84,9 @@ export class TaskList extends React.Component {
             .then(() => {
                 this.loadTasks();
                 this.handleEditModalClose();
+                this.notify('Edit task successfully');
             })
-            .catch((error) => console.error(error));
+            .catch((error) => this.notify('Failed to edit task', 'error'));
     };
 
     handleDeleteModalOpen = (taskId) => {
@@ -290,41 +103,79 @@ export class TaskList extends React.Component {
             .then(() => {
                 this.loadTasks();
                 this.handleDeleteModalClose();
+                this.notify('Delete successfully');
             })
-            .catch((error) => console.error(error));
+            .catch((error) => this.notify('Failed to delete', 'error'))
     };
 
     handleTaskDetailsChange = (event) => {
         this.setState({ selectedTaskDetails: event.target.value });
     };
 
+    handleCompleteTask = (id) => {
+        TaskApi.completeTask(id)
+            .then(() => {
+                this.loadTasks();
+            })
+            .catch((error) => this.notify('Failed to complete task', 'error'))
+    }
+
+    notify = (message, type = 'success') => {
+        const toastConfig = {
+            position: 'bottom-right',
+            autoClose: 5000,
+            closeOnClick: true,
+            pauseOnHover: true
+        };
+        switch (type) {
+            case 'success':
+                toast.success(message, toastConfig);
+                break;
+            case 'error':
+                toast.error(message, toastConfig);
+                break;
+            default:
+                toast(message, toastConfig);
+        }
+    }
 
     render() {
-        const { tasks, addModalOpen, editModalOpen, deleteModalOpen, selectedTask } = this.state;
-
+        const { tasks, openAddModal, openEditModal, openDeleteModal, selectedTaskId, selectedTaskDetails } = this.state;
         return (
             <div>
                 <h1>Tasks</h1>
 
-                <Button variant="contained" color="primary" onClick={this.handleAddModalOpen}>Add Task</Button>
+                <Button>
+                    <AddIcon variant="contained" color="primary" onClick={this.handleAddModalOpen}>
+                        Add Task
+                    </AddIcon>
+                </Button>
 
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Details</TableCell>
                                 <TableCell>Completed</TableCell>
+                                <TableCell>Details</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {tasks.map((task) => (
                                 <TableRow key={task.id}>
+                                    <Checkbox checked={task.completed} onClick={() => this.handleCompleteTask(task.id)}></Checkbox>
                                     <TableCell>{task.details}</TableCell>
-                                    <TableCell>{task.completed ? 'Yes' : 'No'}</TableCell>
                                     <TableCell>
-                                        <Button variant="contained" color="primary" onClick={() => this.handleEditModalOpen(task)}>Edit</Button>
-                                        <Button variant="contained" color="secondary" onClick={() => this.handleDeleteModalOpen(task)}>Delete</Button>
+                                        <Button>
+                                            <EditIcon variant="contained" color="primary" onClick={() => this.handleEditModalOpen(task.id, task.details)}>
+                                                Edit
+                                            </EditIcon>
+                                        </Button>
+                                        <Button>
+                                            <DeleteIcon variant="contained" color="secondary" onClick={() => this.handleDeleteModalOpen(task.id)}>
+                                                Delete
+                                            </DeleteIcon>
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -332,40 +183,41 @@ export class TaskList extends React.Component {
                     </Table>
                 </TableContainer>
 
-                <Modal open={addModalOpen} onClose={this.handleAddModalClose}>
-                    <div style={modalStyle} className={styles.modal}>
-                        <h2>Add Task</h2>
-                        <form onSubmit={this.handleAddTask}>
-                            <TextField label="Details" fullWidth value={this.state.newTaskDetails} onChange={this.handleNewTaskDetailsChange} />
-                            <Button variant="contained" color="primary" type="submit">Add</Button>
-                        </form>
-                    </div>
-                </Modal>
+                <Dialog className="paper" open={openAddModal} onClose={this.handleAddModalClose}>
+                    <DialogTitle>Add Task</DialogTitle>
+                    <DialogContent>
+                        <textarea required label="Details" fullWidth value={selectedTaskDetails} onChange={this.handleTaskDetailsChange} />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleAddModalClose}>Cancel</Button>
+                        <Button variant="contained" color="primary" onClick={this.handleAddModalSave}>Save</Button>
+                    </DialogActions>
+                </Dialog>
 
-                <Modal open={editModalOpen} onClose={this.handleEditModalClose}>
-                    <div style={modalStyle} className={styles.modal}>
-                        <h2>Edit Task</h2>
-                        <form onSubmit={this.handleEditTask}>
-                            <TextField label="Details" fullWidth value={selectedTask.details} onChange={this.handleSelectedTaskDetailsChange} />
-                            <FormControlLabel
-                                control={<Checkbox checked={selectedTask.completed} onChange={this.handleSelectedTaskCompletedChange} />}
-                                label="Completed"
-                            />
-                            <Button variant="contained" color="primary" type="submit">Save</Button>
-                        </form>
-                    </div>
-                </Modal>
+                <Dialog className="paper" open={openEditModal} onClose={this.handleEditModalClose}>
+                    <DialogTitle>Edit Task</DialogTitle>
+                    <DialogContent>
+                        <textarea required label="Details" fullWidth value={selectedTaskDetails} onChange={this.handleTaskDetailsChange} />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleEditModalClose}>Cancel</Button>
+                        <Button variant="contained" color="primary" onClick={this.handleEditModalSave}>Save</Button>
+                    </DialogActions>
+                </Dialog>
 
-                <Modal open={deleteModalOpen} onClose={this.handleDeleteModalClose}>
-                    <div style={modalStyle} className={styles.modal}>
-                        <h2>Delete Task</h2>
-                        <p>Are you sure you want to delete this task?</p>
-                        <p><strong>{selectedTask.details}</strong></p>
-                        <Button variant="contained" color="secondary" onClick={this.handleDeleteTask}>Delete</Button>
-                    </div>
-                </Modal>
-
+                <Dialog className="paper" open={openDeleteModal} onClose={this.handleDeleteModalClose}>
+                    <DialogTitle>Delete Task</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>Are you sure you want to delete this task?</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleDeleteModalClose}>Cancel</Button>
+                        <Button variant="contained" color="primary" onClick={this.handleDeleteModalConfirm}>OK</Button>
+                    </DialogActions>
+                </Dialog>  
+                <ToastContainer />
             </div>
+
         );
     }
 }

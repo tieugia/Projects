@@ -5,12 +5,31 @@
         return data;
     }
 
-    static async createTask(task) {
-        const response = await fetch("/api/Customer/CreateCustomerAsync", {
+    static async addTask(task) {
+        await fetch("/api/Task", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(task),
         });
+    }
+
+    static async updateTask(id,task) {
+        await fetch(`/api/Task/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(task),
+        });
+    }
+
+    static async deleteTask(id) {
+        await fetch(`/api/Task/${id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+
+    static async completeTask(id) {
+        const response = await fetch(`/api/Task/Complete/${id}`)
         const data = await response.json();
         return data;
     }
