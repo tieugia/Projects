@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { DataGrid } from '@mui/x-data-grid';
 import { Menu, MenuItem, Fab } from '@mui/material';
@@ -8,6 +8,9 @@ import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/ico
 
 const TaskTable = ({ tasks, handleEditModalOpen, handleDeleteModalOpen,
     handleMenuClick, handleMenuClose, handleCompleteTask, anchorEl, selectedTaskId }) => {
+
+    const [taskId, setTaskId] = useState(selectedTaskId);
+
     const columns = [
         {
             field: 'completed',
@@ -30,22 +33,26 @@ const TaskTable = ({ tasks, handleEditModalOpen, handleDeleteModalOpen,
             filterable: true,
             disableColumnMenu: false,
             renderCell: (params) => {
-                var id = params.row.id;
                 return (
                     <>
-                        <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, id)}>
+                        <Fab key={task.id} onClick={() => setTaskId(task.id)} size="small" color="primary" onClick={(e) => handleMenuClick(e, params.row.id)}>
                             <AddIcon></AddIcon>
                         </Fab>
+                        {tasks.map((task) => (
+                            <MenuItem key={task.id} onClick={() => setTaskId(task.id)}>
+                                {task.details}
+                            </MenuItem>
+                        ))}
                         <Menu
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
                             onClose={handleMenuClose}
                         >
-                            <MenuItem onClick={(e) => handleEditModalOpen(id)}>
+                            <MenuItem onClick={() => handleEditModalOpen(taskId)}>
                                 <EditIcon />
                                 Edit
                             </MenuItem>
-                            <MenuItem onClick={(e) => handleDeleteModalOpen(id)}>
+                            <MenuItem onClick={() => handleDeleteModalOpen(taskId)}>
                                 <DeleteIcon />
                                 Delete
                             </MenuItem>
