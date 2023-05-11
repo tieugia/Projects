@@ -35,24 +35,19 @@ const TaskTable = ({ tasks, handleEditModalOpen, handleDeleteModalOpen,
             renderCell: (params) => {
                 return (
                     <>
-                        <Fab key={task.id} onClick={() => setTaskId(task.id)} size="small" color="primary" onClick={(e) => handleMenuClick(e, params.row.id)}>
+                        <Fab size="small" color="primary" onClick={(e) => handleMenuClick(e, params.row.id)}>
                             <AddIcon></AddIcon>
                         </Fab>
-                        {tasks.map((task) => (
-                            <MenuItem key={task.id} onClick={() => setTaskId(task.id)}>
-                                {task.details}
-                            </MenuItem>
-                        ))}
                         <Menu
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
                             onClose={handleMenuClose}
                         >
-                            <MenuItem onClick={() => handleEditModalOpen(taskId)}>
+                            <MenuItem onClick={() => handleEditModalOpen(selectedTaskId)}>
                                 <EditIcon />
                                 Edit
                             </MenuItem>
-                            <MenuItem onClick={() => handleDeleteModalOpen(taskId)}>
+                            <MenuItem onClick={() => handleDeleteModalOpen(selectedTaskId)}>
                                 <DeleteIcon />
                                 Delete
                             </MenuItem>

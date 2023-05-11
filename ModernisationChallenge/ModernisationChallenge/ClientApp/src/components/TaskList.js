@@ -98,9 +98,10 @@ export class TaskList extends React.Component {
             this.setState({ selectedTaskId: task.id, selectedTaskDetails: task.details, openEditModal: true });
         }
     };
-   
+
     handleEditModalClose = () => {
         this.setState({ selectedTaskId: null, selectedTaskDetails: '', openEditModal: false });
+        this.handleMenuClose();
     };
 
     handleEditModalSave = () => {
@@ -116,18 +117,15 @@ export class TaskList extends React.Component {
     };
 
     handleDeleteModalOpen = (taskId) => {
-        const { selectedTaskId } = this.state;
-        selectedTaskId = selectedTaskId == null ? taskId : selectedTaskId;
-        this.setState({ openDeleteModal: true });
+        this.setState({ selectedTaskId: taskId, openDeleteModal: true });
     };
 
     handleDeleteModalClose = () => {
         this.setState({ openDeleteModal: false });
     };
 
-    handleDeleteModalConfirm = () => {
-        const { selectedTaskId } = this.state;
-        TaskApi.deleteTask(selectedTaskId)
+    handleDeleteModalConfirm = (id) => {
+        TaskApi.deleteTask(id)
             .then(() => {
                 this.loadTasks();
                 this.handleDeleteModalClose();
@@ -158,7 +156,7 @@ export class TaskList extends React.Component {
                     selectedTaskId={selectedTaskId}
                     anchorEl={anchorEl}
                 />
-                   
+
                 <Dialog fullWidth={true} className="paper" open={openAddModal} onClose={this.handleAddModalClose}>
                     <DialogTitle>Add Task</DialogTitle>
                     <DialogContent>
@@ -188,7 +186,7 @@ export class TaskList extends React.Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.handleDeleteModalClose}>Cancel</Button>
-                        <Button variant="contained" color="primary" onClick={() => this.handleDeleteModalConfirm}>OK</Button>
+                        <Button variant="contained" color="primary" onClick={() => this.handleDeleteModalConfirm(selectedTaskId)}>OK</Button>
                     </DialogActions>
                 </Dialog>
 
